@@ -7,16 +7,16 @@ class Control extends Component{
             <ul>
             <li><a href="/create" onClick={function(e){
                 e.preventDefault();
-                this.props.onChangePage('create');
-            }}>create</a></li>
+                this.props.onChangeMode('create');
+            }.bind(this)}>create</a></li>
             <li><a href="/update" onClick={function(e){
                 e.preventDefault();
-                this.props.onChangePage('update');
-            }}>update</a></li>
+                this.props.onChangeMode('update');
+            }.bind(this)}>update</a></li>
             <li><input type="button" value="delete" onClick={function(e){
                 e.preventDefault();
-                this.props.onChangePage('delete');
-            }}></input></li>
+                this.props.onChangeMode('delete');
+            }.bind(this)}></input></li>
           </ul>
         );
     }
