@@ -1,7 +1,16 @@
 import React, { Component } from "react";
 
 class TOC extends Component{
+    shouldComponentUpdate(newProps,newState){
+        console.log('===> TOC render shouldComponentUpdate',newProps.data,this.props.data);
+        if(newProps.data === this.props.data){
+            return false;
+        }
+
+        return true;
+    }
     render(){
+        console.log('TOC render');
         var lists = [];
         var data = this.props.data;
         var i = 0;
@@ -11,6 +20,7 @@ class TOC extends Component{
                                 data-id={data[i].id}
                                 onClick={function(e){
                                     e.preventDefault();
+                                    console.log(e.target.dataset.id)
                                     this.props.onChangePage(e.target.dataset.id);
                                 }.bind(this)
                                 }
