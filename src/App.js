@@ -31,6 +31,7 @@ class App extends Component {
       while(i < this.state.contents.length){
         var data = this.state.contents[i];
         if(data.id === this.state.selected_content_id){
+          
           return data;
         }
         i += 1;
@@ -46,40 +47,46 @@ class App extends Component {
     }else if(this.state.mode === 'read'){
       console.log('read content');
       var _content = this.getReadContent();
-      _article = <ReadContent title={_content._title} desc={_content._desc}></ReadContent>
+      _article = <ReadContent title={_content.title} desc={_content.desc}></ReadContent>
 
     }else if(this.state.mode === 'create'){
       _article = <CreateContent onSubmit={function(_title,_desc){
         ++this.max_content_id;
-        //const _contents = this.state.contents.concat(
-        //  {id:this.max_content_id, title:_title, desc:_desc}
-        //);
+
         var newContents = Array.from(this.state.contents);
         newContents.push({id:this.max_content_id,
         title:_title,desc:_desc});
 
         this.setState({
-          contents:newContents
+          contents:newContents,
+          mode:'read',
+          selected_content_id:this.max_content_id
         })
       }.bind(this)}></CreateContent>
     }else if(this.state.mode === 'update'){
       _content = this.getReadContent();
-      _article = <UpdateContent data={_content} onSubmit={function(_title,_desc){
-        ++this.max_content_id;
-        //const _contents = this.state.contents.concat(
-        //  {id:this.max_content_id, title:_title, desc:_desc}
-        //);
+      _article = <UpdateContent data={_content} onSubmit={function(_id,_title,_desc){
         var newContents = Array.from(this.state.contents);
-        newContents.push({id:this.max_content_id,
-        title:_title,desc:_desc});
+
+        var i = 0;
+        while(i < newContents.length){
+          if(newContents[i].id === _id){
+            newContents[i] = {id:_id,title:_title,desc:_desc};
+            break;
+          }
+          i++;
+        }
 
         this.setState({
-          contents:newContents
+          contents:newContents,
+          mode:'read'
         })
       }.bind(this)}></UpdateContent>
+    }else if(this.state.mode === 'delete'){
+
     }
 
-    console.log(_article);
+    
     return _article;
   }
 
@@ -108,9 +115,31 @@ class App extends Component {
             data={this.state.contents}
           ></TOC>
           <Control onChangeMode={function(_mode){
-            this.setState({
-              mode:_mode
-            })
+            if(_mode === 'delete'){
+              if(window.confirm('really?')){
+                var _contents = Array.from(this.state.contents);
+                var i = 0;
+                while(i<_contents.length){
+                  if(_contents[i].id === this.state.selected_content_id){
+                    _contents.splice(i,1);
+                    break;
+                  }
+                  i++;
+                }
+
+                this.setState({
+                  contents:_contents,
+                  mode:'welcome'
+                });
+
+                alert('deleted!!');
+
+              }
+            }else{
+              this.setState({
+                mode:_mode
+              })
+            }
           }.bind(this)}></Control>
           {this.getContent()}
           
